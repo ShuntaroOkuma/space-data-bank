@@ -67,7 +67,8 @@ const Upload = () => {
   // mint NFT
   const mint = async () => {
     console.log("mint NFT...");
-    const nft: Contract = new Contract(addressNFTContract, abi, signer);
+    const mintSigner = await library?.getSigner();
+    const nft: Contract = new Contract(addressNFTContract, abi, mintSigner);
 
     // mint for connected user
     nft
@@ -81,7 +82,7 @@ const Upload = () => {
       .catch((e: Error) => console.log(e));
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!(active && account && library)) return;
 
@@ -90,9 +91,8 @@ const Upload = () => {
     console.log(productMetadata);
 
     if (file && productMetadata) {
-      setSigner(library.getSigner());
-      uploadLighthouse();
-      mint();
+      await uploadLighthouse();
+      await mint();
     }
   };
 
